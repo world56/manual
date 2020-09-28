@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <button id='btn'>点击</button>
+  <script>
+    // 获取节点
+    var btn = document.getElementById('btn');
+
+    // 事件
+    function eventClick() {
+      console.log('@事件')
+    }
+
+    // 监听
+    btn.addEventListener('click', throttle(eventClick, 1000));
+
+    // 防抖
+    function debounce(fn, out) {
+      var time;
+      return function () {
+        clearTimeout(time);
+        time = setTimeout(() => {
+          fn.apply(this, ...arguments);
+        }, out);
+      };
+    };
+
+    // 节流
+    function throttle(fn, out) {
+      var state = true;
+      return function () {
+        if (!state) return
+        state = false;
+        setTimeout(() => {
+          fn.apply(this, ...arguments);
+          state = true;
+        }, out);
+      };
+    };
+
+  </script>
+</body>
+
+</html>
