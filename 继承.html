@@ -10,9 +10,11 @@
 <body>
   <script>
 
+    function Abc() { this.name = 'Abc'; }
+
     // new 方法一
     function _new() {
-      var constructor = Array.shift.call(arguments);
+      var constructor = Array.prototype.shift.call(arguments);
       var obj = new Object();
       obj.__proto__ = constructor.prototype;
       var result = constructor.apply(obj, arguments)
@@ -21,19 +23,46 @@
 
     // new 方法二
     function __new() {
-      var consturctor = Array.shift.call(arguments)
-      var obj = Object.create(constructor);
-      constructor.apply(obj, arguments)
+      var consturctor = Array.prototype.shift.call(arguments)
+      var obj = Object.create(consturctor.prototype);
+      consturctor.apply(obj, arguments)
       return obj
     }
 
     // Object.create
     function _create() {
-      var arg = Array.shift.call(arguments);
+      var arg = Array.prototype.shift.call(arguments);
       var F = function () { }
       F.prototype = arg;
       return new F();
     }
+
+    // bind
+    Function.prototype._bind = function () {
+      // 获取arguments对象
+      var arg = Array.prototype.slice.call(arguments, 0);
+      // 拿到需要指向的对象
+      var obj = arg.shift()
+      // 当前环境
+      var _this = this;
+      console.log(_this,'~')
+      // 这里返回一个可执行函数
+      function F() {
+        // 判断一下上下文环境
+        var result = this instanceof F ? this : obj;
+        _this.apply(result, arg)
+      }
+      F.prototype = Object.create(_this.prototype);
+      return F;
+    }
+
+    function con() { console.log(this.name) }
+
+    var a = { name: 'a' }
+    var b = { name: 'b' }
+
+    var f = con._bind(a)
+    f()
 
   </script>
 </body>
